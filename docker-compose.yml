@@ -5,7 +5,7 @@ services:
     image: postgres:15
     container_name: my-postgres
     environment:
-      POSTGRES_DB: mydb
+      POSTGRES_DB: order_db2
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: mypass
     ports:
@@ -13,19 +13,32 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  order-service:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: my-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672" # RabbitMQ için iletişim portu
+      - "15672:15672" # RabbitMQ Management UI için port
+
+  order-service6:
     build: .
     depends_on:
       - postgres
+      - rabbitmq
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://my-postgres:5432/mydb
       SPRING_DATASOURCE_USERNAME: myuser
       SPRING_DATASOURCE_PASSWORD: mypass
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      RABBITMQ_HOST: my-rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: guest
+      RABBITMQ_PASSWORD: guest
     ports:
       - "8082:8082"
-    volumes:
-      - ./logs:/app/logs # Opsiyonel
     command: ["java", "-jar", "/app/order.jar"] # Doğru başlatma komutunu ekleyin
 
 volumes:

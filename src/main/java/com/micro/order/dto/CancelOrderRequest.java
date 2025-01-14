@@ -5,5 +5,8 @@ import lombok.Data;
 @Data
 public class CancelOrderRequest {
     private Long orderId;
-    private String reason;
+
+    public CancelOrderRequest(Long orderId) {
+        this.orderId = orderId;
+    }
 }

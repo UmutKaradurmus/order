@@ -2,8 +2,10 @@ package com.micro.order.dto;
 
 import lombok.Data;
 
+
 @Data
 public class CreateOrderRequest {
-    private Long userId;
-    private Long cartId;
+    private Long userId; // Kullanıcının ID'si
+    private Long cartId; // Sepetin ID'si
 }
+
